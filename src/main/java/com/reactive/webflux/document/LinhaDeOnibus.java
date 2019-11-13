@@ -14,9 +14,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class LinhaDeOnibus {
 
     @Id
-    private Integer id;
+    private String id;
 
-    private Integer idRemoto;
+    private String idRemoto;
 
     private String codigo;
 }
