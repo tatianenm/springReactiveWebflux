@@ -1,0 +1,6 @@
+// Criar Collection ("tabela") para armezar os arquivos
+db.createCollection("linhaonibus")
+
+
+// Consultar arquivos salvos
+db.linhaonibuss.find()

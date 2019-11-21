@@ -10,5 +10,6 @@ public interface LinhaDeOnibusService {
     Mono<LinhaDeOnibus> findByName(String nome);
     Mono<LinhaDeOnibus> save(LinhaDeOnibus linhaDeOnibus);
     Mono<LinhaDeOnibus> update(LinhaDeOnibus linhaDeOnibus);
-    void delete(LinhaDeOnibus linhaDeOnibus);
+    Mono<LinhaDeOnibus> deleteById(String id);
+    Mono<LinhaDeOnibus> findById(String id);
 }

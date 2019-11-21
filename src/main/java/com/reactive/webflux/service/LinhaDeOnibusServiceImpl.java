@@ -33,7 +33,12 @@ public class LinhaDeOnibusServiceImpl implements LinhaDeOnibusService {
     }
 
     @Override
-    public void delete(LinhaDeOnibus linhaDeOnibus) {
-        linhaDeOnibusService.delete(linhaDeOnibus);
+    public Mono<LinhaDeOnibus> deleteById(String id) {
+        return linhaDeOnibusService.deleteById(id);
+    }
+
+    @Override
+    public Mono<LinhaDeOnibus> findById(String id) {
+        return null;
     }
 }
