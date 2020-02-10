@@ -1,53 +1,47 @@
-package com.reactive.webflux.controller;
+package com.reactive.webflux.service;
 
 import com.reactive.webflux.dto.LinhaDeOnibusDTO;
 import com.reactive.webflux.repository.LinhadeOnibusRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.util.UriBuilderFactory;
 import reactor.core.publisher.Flux;
-import reactor.util.function.Tuple2;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 
-@RestController
+@Service
 @RequestMapping("/linhas")
-public class LinhadeOnibusController {
+public class LinhadeOnibusService {
 
     private LinhadeOnibusRepository linhadeOnibusRepository;
 
     private static final String ENDPOINT_LINHAS_DE_ONIBUS = "http://www.poatransporte.com.br/php/facades/process.php?a=nc&p=%&t=o";
 
-    @Autowired
-    private WebClient.Builder webClientBuilder;
 
-    public LinhadeOnibusController(LinhadeOnibusRepository linhadeOnibusRepository) {
+    public LinhadeOnibusService(LinhadeOnibusRepository linhadeOnibusRepository) {
         this.linhadeOnibusRepository = linhadeOnibusRepository;
     }
 
     @GetMapping(value = "/linhas")
     public Flux<LinhaDeOnibusDTO> findAll() {
-        Flux<LinhaDeOnibusDTO> linhasDeOnibusDTO ;
+        Flux<LinhaDeOnibusDTO> linhasDeOnibusDTO;
+        return WebClient.create(ENDPOINT_LINHAS_DE_ONIBUS).get()
+                .uri("/linhas").accept(APPLICATION_JSON)
+                .retrieve()
+                .bodyToFlux(LinhaDeOnibusDTO.class);
 
-//        return linhasDeOnibusDTO
-//                          .flatMap(dto -> {
-//                              webClientBuilder.build()
-//                                      .get()
-//                                      .uri(ENDPOINT_LINHAS_DE_ONIBUS)
-//                                      .retrieve()
-//                                      .bodyToMono(LinhaDeOnibusDTO.class)
-//                                      .block();
-//                              return new LinhaDeOnibusDTO(dto.getId(), dto.getCodigo(), dto.getNome());
-//                          })
-//                 .collect(Collectors.toList());
+
+    }
+
+    public Flux<LinhaDeOnibusDTO> save(){
+return null;
+    }
+
+    public Flux<LinhaDeOnibusDTO> findByName(String name){
         return null;
     }
 
