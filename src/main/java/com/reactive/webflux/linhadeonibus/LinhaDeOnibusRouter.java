@@ -17,7 +17,7 @@ public class LinhaDeOnibusRouter {
                 .route(GET("webflux/v1/linhas").and(accept(MediaType.APPLICATION_JSON)), handler::findAll)
                 .andRoute(GET("webflux/v1/linhas/{nome}").and(accept(MediaType.APPLICATION_JSON)), handler::findByName)
                 //.andRoute(POST("webflux/v1/salvar").and(accept(MediaType.APPLICATION_JSON)), handler::save)
-                .andRoute(PUT("/editar").and(accept(MediaType.APPLICATION_JSON)), handler::update);
+                .andRoute(PUT("webflux/v1/editar").and(accept(MediaType.APPLICATION_JSON)), handler::update);
     }
 
 

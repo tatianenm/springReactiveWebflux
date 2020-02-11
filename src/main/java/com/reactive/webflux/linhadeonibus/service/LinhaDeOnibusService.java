@@ -51,8 +51,7 @@ public class LinhaDeOnibusService {
     }
 
     public Mono<LinhaDeOnibusDTO> findByName(String name) {
-        var lista = findAll().filter(linhaDeOnibusDTO -> Objects.equals(linhaDeOnibusDTO.getNome(), name)).
-        return null;
+        return findAll().filter(linhaDeOnibusDTO -> Objects.equals(linhaDeOnibusDTO.getNome(), name));
     }
 
     public Mono<LinhaDeOnibusDTO> findById(String id) {
