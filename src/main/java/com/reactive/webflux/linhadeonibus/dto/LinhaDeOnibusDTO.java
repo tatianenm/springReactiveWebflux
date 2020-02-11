@@ -1,6 +1,7 @@
-package com.reactive.webflux.dto;
+package com.reactive.webflux.linhadeonibus.dto;
 
 import lombok.*;
+
 
 @Getter
 @Setter
@@ -15,3 +16,4 @@ public class LinhaDeOnibusDTO {
 
     private String nome;
 }
+
