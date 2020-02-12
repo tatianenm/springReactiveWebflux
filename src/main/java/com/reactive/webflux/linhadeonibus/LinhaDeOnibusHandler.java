@@ -3,6 +3,7 @@ package com.reactive.webflux.linhadeonibus;
 import com.reactive.webflux.linhadeonibus.dto.LinhaDeOnibusDTO;
 import com.reactive.webflux.linhadeonibus.model.LinhaDeOnibus;
 import com.reactive.webflux.linhadeonibus.service.LinhaDeOnibusService;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -36,6 +37,8 @@ public class LinhaDeOnibusHandler {
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
+
+
 //    @Transactional
 //    public Mono<ServerResponse> save(ServerRequest request) {
 //        final Mono<LinhaDeOnibusDTO> linhaDeOnibusMono = request.bodyToMono(LinhaDeOnibusDTO.class);
@@ -57,7 +60,7 @@ public class LinhaDeOnibusHandler {
                             linha.setNome(linha2.getNome());
                             return linha;
                         },
-                        linhadeOnibusService.findById(request.pathVariable("id")),
+                        linhadeOnibusService.findByCodigo(request.pathVariable("codigo")),
                         request.bodyToMono(LinhaDeOnibus.class)
                 ).cast(LinhaDeOnibusDTO.class)
                 .flatMap(linhaDeOnibus -> linhadeOnibusService.update(linhaDeOnibus))
@@ -65,4 +68,13 @@ public class LinhaDeOnibusHandler {
     }
 
 
+    public Mono<ServerResponse> events(ServerRequest serverRequest) {
+        String codigo = serverRequest.pathVariable("codigo");
+        return ServerResponse.ok()
+                .contentType(MediaType.TEXT_EVENT_STREAM)
+                .body(linhadeOnibusService.streams(codigo), LinhaDeOnibusDTO.class)
+                .doOnError(throwable -> new IllegalStateException(""));
+    }
 }
+
+
