@@ -57,6 +57,7 @@ public class LinhaDeOnibusService {
     }
 
     public Flux<LinhaDeOnibusDTO> findByName(String name) {
+        System.out.println(name);
         return  findAll().filter(linhaDeOnibusDTO -> Objects.equals(linhaDeOnibusDTO.getNome(), name));
     }
 
