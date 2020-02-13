@@ -5,13 +5,16 @@ import com.reactive.webflux.linhadeonibus.dto.LinhaDeOnibusDTO;
 import com.reactive.webflux.linhadeonibus.events.LinhaDeOnibusEvents;
 import com.reactive.webflux.linhadeonibus.repository.LinhaDeOnibusRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
@@ -22,6 +25,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static reactor.core.publisher.Flux.error;
 
 @Service
 public class LinhaDeOnibusService {
@@ -40,8 +44,10 @@ public class LinhaDeOnibusService {
         var strategies = ExchangeStrategies
                 .builder()
                 .codecs(clientDefaultCodecsConfigurer -> {
-                    clientDefaultCodecsConfigurer.defaultCodecs().jackson2JsonEncoder(new Jackson2JsonEncoder(new ObjectMapper(), MediaType.TEXT_HTML));
-                    clientDefaultCodecsConfigurer.defaultCodecs().jackson2JsonDecoder(new Jackson2JsonDecoder(new ObjectMapper(), MediaType.TEXT_HTML));
+                    clientDefaultCodecsConfigurer.defaultCodecs()
+                            .jackson2JsonEncoder(new Jackson2JsonEncoder(new ObjectMapper(), MediaType.TEXT_HTML));
+                    clientDefaultCodecsConfigurer.defaultCodecs()
+                            .jackson2JsonDecoder(new Jackson2JsonDecoder(new ObjectMapper(), MediaType.TEXT_HTML));
                 }).build();
 
         var webClient = WebClient.builder().exchangeStrategies(strategies).baseUrl(ENDPOINT_LINHAS_DE_ONIBUS).build();
@@ -52,25 +58,29 @@ public class LinhaDeOnibusService {
                 .bodyToFlux(LinhaDeOnibusDTO.class);
     }
 
-    public Mono<LinhaDeOnibusDTO> save(LinhaDeOnibusDTO linhaDeOnibusDTO) {
+    @CacheEvict(value = "linhaDeOnibusDTOS", allEntries = true)
+    public Mono<LinhaDeOnibusDTO> save(Mono<LinhaDeOnibusDTO> linhaDeOnibusDTO) {
+        findAll().filter(linha->!Objects.equals(linha,linhaDeOnibusDTO)).flatMap(linha -> linhaDeOnibusRepository.save(linha));
         return null;
     }
 
     public Flux<LinhaDeOnibusDTO> findByName(String name) {
-        System.out.println(name);
-        return  findAll().filter(linhaDeOnibusDTO -> Objects.equals(linhaDeOnibusDTO.getNome(), name));
+        return  findAll().filter(linhaDeOnibusDTO -> Objects.equals(linhaDeOnibusDTO.getNome().toUpperCase(), name))
+                .switchIfEmpty(error(new ResponseStatusException(HttpStatus.NOT_FOUND)));
     }
 
-    public Mono<LinhaDeOnibusDTO> findByCodigo(String id) {
-        return null;
+    public Flux<LinhaDeOnibusDTO> findByCodigo(String codigo) {
+        return findAll().filter(linhaDeOnibusDTO -> linhaDeOnibusDTO.getCodigo().equalsIgnoreCase(codigo))
+                .switchIfEmpty(error(new ResponseStatusException(HttpStatus.NOT_FOUND)));
     }
 
+    @CacheEvict(value = "linhaDeOnibusDTOS", allEntries = true)
     public Mono<LinhaDeOnibusDTO> update(LinhaDeOnibusDTO linhaDeOnibusDTO) {
         return null;
     }
 
     public Flux<LinhaDeOnibusEvents> streams(String codigo) {
-        return findByCodigo(codigo).flatMapMany(linhaOnibus -> {
+        return findByCodigo(codigo).flatMap(linhaOnibus -> {
             Flux<Long> interval = Flux.interval(Duration.ofSeconds(1));
             Flux<LinhaDeOnibusEvents> events = Flux.fromStream(
                     Stream.generate(() -> new LinhaDeOnibusEvents(linhaOnibus, new Date())));
