@@ -62,15 +62,16 @@ public class LinhaDeOnibusService {
     }
 
     @CacheEvict(value = "linhaDeOnibusDTOS", allEntries = true)
-    public Mono<LinhaDeOnibusDTO> save(LinhaDeOnibusDTO linhaDeOnibusDTO) {
+    public LinhaDeOnibusDTO save(LinhaDeOnibusDTO linhaDeOnibusDTO) {
         if(Objects.nonNull(findAll())) {
             findAll().toStream().forEach(linha -> {
                 linhaDeOnibusRepository
                         .save(linhaDeOnibusConverter.converteParaLinhaDeOnibus(linha));
             });
         }
+        var linha = linhaDeOnibusRepository.save(linhaDeOnibusConverter.converteParaLinhaDeOnibus(linhaDeOnibusDTO));
 
-
+return null;
 
 
     }
