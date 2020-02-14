@@ -1,6 +1,7 @@
 package com.reactive.webflux.linhadeonibus.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.reactive.webflux.linhadeonibus.converter.LinhaDeOnibusConverter;
 import com.reactive.webflux.linhadeonibus.dto.LinhaDeOnibusDTO;
 import com.reactive.webflux.linhadeonibus.events.LinhaDeOnibusEvents;
 import com.reactive.webflux.linhadeonibus.repository.LinhaDeOnibusRepository;
@@ -32,6 +33,8 @@ public class LinhaDeOnibusService {
 
     private LinhaDeOnibusRepository linhaDeOnibusRepository;
 
+    private LinhaDeOnibusConverter linhaDeOnibusConverter;
+
     private static final String ENDPOINT_LINHAS_DE_ONIBUS = "http://www.poatransporte.com.br/php/facades/process.php?a=nc&p=%&t=o";
 
     @Autowired
@@ -59,9 +62,17 @@ public class LinhaDeOnibusService {
     }
 
     @CacheEvict(value = "linhaDeOnibusDTOS", allEntries = true)
-    public Mono<LinhaDeOnibusDTO> save(Mono<LinhaDeOnibusDTO> linhaDeOnibusDTO) {
-        findAll().filter(linha->!Objects.equals(linha,linhaDeOnibusDTO)).flatMap(linha -> linhaDeOnibusRepository.save(linha));
-        return null;
+    public Mono<LinhaDeOnibusDTO> save(LinhaDeOnibusDTO linhaDeOnibusDTO) {
+        if(Objects.nonNull(findAll())) {
+            findAll().toStream().forEach(linha -> {
+                linhaDeOnibusRepository
+                        .save(linhaDeOnibusConverter.converteParaLinhaDeOnibus(linha));
+            });
+        }
+
+
+
+
     }
 
     public Flux<LinhaDeOnibusDTO> findByName(String name) {
