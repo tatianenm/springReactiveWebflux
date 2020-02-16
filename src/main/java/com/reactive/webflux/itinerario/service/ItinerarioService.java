@@ -29,20 +29,20 @@ public class ItinerarioService {
     }
 
     public Flux<ItinerarioDTO> findAll() {
-//        var strategies = ExchangeStrategies
-//                .builder()
-//                .codecs(clientDefaultCodecsConfigurer -> {
-//                    clientDefaultCodecsConfigurer.defaultCodecs()
-//                            .jackson2JsonEncoder(new Jackson2JsonEncoder(new ObjectMapper()
-//                                    ,
-//                                    MediaType.TEXT_HTML));
-//                    clientDefaultCodecsConfigurer.defaultCodecs()
-//                            .jackson2JsonDecoder(new Jackson2JsonDecoder(new ObjectMapper()
-//                                    .configure(DeserializationFeature., false),
-//                                    MediaType.TEXT_HTML));
-//                }).build();
-//
-//        var webClient = WebClient.builder().exchangeStrategies(strategies).baseUrl(ENDPOINT_ITINERARIO).build();
+        var strategies = ExchangeStrategies
+                .builder()
+                .codecs(clientDefaultCodecsConfigurer -> {
+                    clientDefaultCodecsConfigurer.defaultCodecs()
+                            .jackson2JsonEncoder(new Jackson2JsonEncoder(new ObjectMapper()
+                                    .configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false),
+                                    MediaType.TEXT_HTML));
+                    clientDefaultCodecsConfigurer.defaultCodecs()
+                            .jackson2JsonDecoder(new Jackson2JsonDecoder(new ObjectMapper()
+                                    .configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false),
+                                    MediaType.TEXT_HTML));
+                }).build();
+
+        var webClient = WebClient.builder().exchangeStrategies(strategies).baseUrl(ENDPOINT_ITINERARIO).build();
         return webClient.get()
                 .accept(APPLICATION_JSON)
                 .retrieve()
