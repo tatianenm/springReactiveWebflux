@@ -17,13 +17,13 @@ API Spring Reactive Webflux Mongodb
    Linhas de ônibus Por Nome
    URL:GET/webflux/v1/linhas/{nome}
 
-   Salvar Linha de ônibus
+   Salvar linha de ônibus
    URL:POST/webflux/v1/linhas
 
-   Atualiza linha de ônibus
+   Atualizar linha de ônibus
    URL:PUT/webflux/v1/linhas
    
-   Itinerários
+   Lista itinerários
    URL:GET/webflux/v1/itinerarios
 
   Código implementado:
