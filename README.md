@@ -1,15 +1,12 @@
 # SpringReactiveWebflux
 API Spring Reactive Webflux Mongodb
 
- Projeto é uma  API Rest WebFlux que lista linhas de ônibus, o banco de dados MongoDB.
+ Projeto é uma  API Rest WebFlux que lista linhas de ônibus e itinerários.
 
   Requisitos:
-     IDE é opcional, foi utilizado Intellij.
+     IDE Intellij.
      jdk 11.0.5
      maven
- 
-  Testar a aplicação:
-   postman
          
    Funcionamento
    A aplicação foi desenvolvida Spring WebFlux.
