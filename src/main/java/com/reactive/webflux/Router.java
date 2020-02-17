@@ -10,7 +10,7 @@ import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 @Configuration
-public class LinhaDeOnibusRouter {
+public class Router {
     @Bean
     public RouterFunction<ServerResponse> route(LinhaDeOnibusHandler handler, ItinerarioHandler itinerarioHandler) {
         return RouterFunctions
