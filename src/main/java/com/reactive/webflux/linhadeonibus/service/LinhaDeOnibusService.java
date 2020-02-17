@@ -92,7 +92,7 @@ return null;
     }
 
     public Flux<LinhaDeOnibusEvents> streams(String codigo) {
-        return findByCodigo(codigo).flatMap(linhaOnibus -> {
+        return findAll().flatMap(linhaOnibus -> {
             Flux<Long> interval = Flux.interval(Duration.ofSeconds(1));
             Flux<LinhaDeOnibusEvents> events = Flux.fromStream(
                     Stream.generate(() -> new LinhaDeOnibusEvents(linhaOnibus, new Date())));

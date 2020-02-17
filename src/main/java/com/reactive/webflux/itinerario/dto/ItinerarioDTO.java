@@ -20,7 +20,8 @@ public class ItinerarioDTO {
     private String codigo;
 
     private String nome;
-private List<LatitudeLongitudeDTO> lista;
+
+
 
 
     //private List<Double> coordinates;
