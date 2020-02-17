@@ -13,11 +13,9 @@ API Spring Reactive Webflux Mongodb
 
    Linhas de Ônibus
    URL:GET/webflux/v1/linhas
-   Retorna lista de linha de ônibus existente
 
    Linhas de Ônibus Por Nome
    URL:GET/webflux/v1/linhas/{nome}
-   Pesquisa Linha de Ônibus Por Nome
 
    Salvar Linha de Ônibus
    URL:POST/webflux/v1/linhas
