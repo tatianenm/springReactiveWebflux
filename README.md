@@ -11,17 +11,20 @@ API Spring Reactive Webflux Mongodb
    Funcionamento
    A aplicação foi desenvolvida Spring WebFlux.
 
-   Linhas de Ônibus
+   Linhas de ônibus
    URL:GET/webflux/v1/linhas
 
-   Linhas de Ônibus Por Nome
+   Linhas de ônibus Por Nome
    URL:GET/webflux/v1/linhas/{nome}
 
-   Salvar Linha de Ônibus
+   Salvar Linha de ônibus
    URL:POST/webflux/v1/linhas
 
    Atualiza linha de ônibus
    URL:PUT/webflux/v1/linhas
+   
+   Itinerários
+   URL:GET/webflux/v1/itinerarios
 
   Código implementado:
   Divisão de responsabilidades das classes onde o a classe Router responsável pelas rotas, handler responsável por aceitar 
