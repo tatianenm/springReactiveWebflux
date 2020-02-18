@@ -2,10 +2,12 @@ package com.reactive.webflux.linhadeonibus.converter;
 
 import com.reactive.webflux.linhadeonibus.dto.LinhaDeOnibusDTO;
 import com.reactive.webflux.linhadeonibus.model.LinhaDeOnibus;
+import org.springframework.stereotype.Component;
 
+@Component
 public class LinhaDeOnibusConverter {
 
-    public LinhaDeOnibus converteParaLinhaDeOnibus(LinhaDeOnibusDTO linhaDeOnibusDTO) {
+    public LinhaDeOnibus toEntity(LinhaDeOnibusDTO linhaDeOnibusDTO) {
         return LinhaDeOnibus.builder()
                 .codigo(linhaDeOnibusDTO.getCodigo())
                 .idRemoto(linhaDeOnibusDTO.getId())
@@ -13,7 +15,7 @@ public class LinhaDeOnibusConverter {
                 .build();
     }
 
-    public LinhaDeOnibusDTO converteParaLinhaDeOnibusDTO(LinhaDeOnibus linhaDeOnibus) {
+    public LinhaDeOnibusDTO toDTO(LinhaDeOnibus linhaDeOnibus) {
         return LinhaDeOnibusDTO.builder()
                 .codigo(linhaDeOnibus.getCodigo())
                 .id(linhaDeOnibus.getId())

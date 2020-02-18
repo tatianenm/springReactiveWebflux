@@ -1,12 +1,11 @@
 package com.reactive.webflux.itinerario.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 @Builder
 @Getter
@@ -20,12 +19,5 @@ public class ItinerarioDTO {
     private String codigo;
 
     private String nome;
-private List<LatitudeLongitudeDTO> lista;
-
-
-    //private List<Double> coordinates;
-
-
-
 
 }

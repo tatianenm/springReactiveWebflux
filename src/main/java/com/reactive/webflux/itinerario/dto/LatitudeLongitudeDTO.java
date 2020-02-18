@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 public class LatitudeLongitudeDTO {
 
-    private String type = "Point";
+
     private Double lat;
     private Double lng;
 }
