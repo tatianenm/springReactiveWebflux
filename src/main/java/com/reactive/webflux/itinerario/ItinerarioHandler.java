@@ -11,6 +11,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.http.MediaType.TEXT_EVENT_STREAM;
 
 
 @Component
@@ -40,7 +41,7 @@ public class ItinerarioHandler {
 
     public Mono<ServerResponse> events(ServerRequest serverRequest) {
         return ServerResponse.ok()
-                .contentType(MediaType.TEXT_EVENT_STREAM)
+                .contentType(TEXT_EVENT_STREAM)
                 .body(itinerarioService.streams(serverRequest.pathVariable("codigo")), LinhaDeOnibusDTO.class)
                 .doOnError(throwable -> new IllegalStateException(""));
     }

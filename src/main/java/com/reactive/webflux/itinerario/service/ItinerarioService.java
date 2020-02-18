@@ -37,8 +37,8 @@ public class ItinerarioService {
     }
 
     private Flux<Map> findItinerarios(String codigo) {
-
         var webClient = ExchangeStrategiesUtil.estrategies(ENDPOINT_ITINERARIO + codigo);
+
         return webClient.get()
                 .accept(APPLICATION_JSON)
                 .retrieve()
