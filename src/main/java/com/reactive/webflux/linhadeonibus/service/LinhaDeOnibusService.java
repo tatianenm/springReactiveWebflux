@@ -1,20 +1,16 @@
 package com.reactive.webflux.linhadeonibus.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.reactive.webflux.linhadeonibus.converter.LinhaDeOnibusConverter;
 import com.reactive.webflux.linhadeonibus.dto.LinhaDeOnibusDTO;
 import com.reactive.webflux.linhadeonibus.events.LinhaDeOnibusEvents;
+import com.reactive.webflux.linhadeonibus.model.LinhaDeOnibus;
 import com.reactive.webflux.linhadeonibus.repository.LinhaDeOnibusRepository;
+import com.reactive.webflux.util.ExchangeStrategiesUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.codec.json.Jackson2JsonDecoder;
-import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.ExchangeStrategies;
-import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -38,22 +34,14 @@ public class LinhaDeOnibusService {
     private static final String ENDPOINT_LINHAS_DE_ONIBUS = "http://www.poatransporte.com.br/php/facades/process.php?a=nc&p=%&t=o";
 
     @Autowired
-    public LinhaDeOnibusService(LinhaDeOnibusRepository linhaDeOnibusRepository) {
+    public LinhaDeOnibusService(LinhaDeOnibusRepository linhaDeOnibusRepository, LinhaDeOnibusConverter linhaDeOnibusConverter) {
         this.linhaDeOnibusRepository = linhaDeOnibusRepository;
+        this.linhaDeOnibusConverter = linhaDeOnibusConverter;
     }
 
     @Cacheable(value = "linhaDeOnibusDTOS")
     public Flux<LinhaDeOnibusDTO> findAll() {
-        var strategies = ExchangeStrategies
-                .builder()
-                .codecs(clientDefaultCodecsConfigurer -> {
-                    clientDefaultCodecsConfigurer.defaultCodecs()
-                            .jackson2JsonEncoder(new Jackson2JsonEncoder(new ObjectMapper(), MediaType.TEXT_HTML));
-                    clientDefaultCodecsConfigurer.defaultCodecs()
-                            .jackson2JsonDecoder(new Jackson2JsonDecoder(new ObjectMapper(), MediaType.TEXT_HTML));
-                }).build();
-
-        var webClient = WebClient.builder().exchangeStrategies(strategies).baseUrl(ENDPOINT_LINHAS_DE_ONIBUS).build();
+        var webClient = ExchangeStrategiesUtil.estrategies(ENDPOINT_LINHAS_DE_ONIBUS);
 
         return webClient.get()
                 .accept(APPLICATION_JSON)
@@ -62,22 +50,20 @@ public class LinhaDeOnibusService {
     }
 
     @CacheEvict(value = "linhaDeOnibusDTOS", allEntries = true)
-    public LinhaDeOnibusDTO save(LinhaDeOnibusDTO linhaDeOnibusDTO) {
-        if(Objects.nonNull(findAll())) {
+    public Mono<LinhaDeOnibusDTO> save(LinhaDeOnibusDTO linhaDeOnibusDTO) {
+        if (Objects.nonNull(findAll())) {
             findAll().toStream().forEach(linha -> {
                 linhaDeOnibusRepository
-                        .save(linhaDeOnibusConverter.converteParaLinhaDeOnibus(linha));
+                        .save(linhaDeOnibusConverter.toEntity(linha));
             });
         }
-        var linha = linhaDeOnibusRepository.save(linhaDeOnibusConverter.converteParaLinhaDeOnibus(linhaDeOnibusDTO));
-
-return null;
-
-
+        var linha = linhaDeOnibusRepository.save(linhaDeOnibusConverter.toEntity(linhaDeOnibusDTO));
+        ;
+        return linhaDeOnibusConverter.toDTO(LinhaDeOnibus.class);
     }
 
     public Flux<LinhaDeOnibusDTO> findByName(String name) {
-        return  findAll().filter(linhaDeOnibusDTO -> Objects.equals(linhaDeOnibusDTO.getNome().toUpperCase(), name))
+        return findAll().filter(linhaDeOnibusDTO -> Objects.equals(linhaDeOnibusDTO.getNome().toUpperCase(), name))
                 .switchIfEmpty(error(new ResponseStatusException(HttpStatus.NOT_FOUND)));
     }
 
@@ -101,10 +87,3 @@ return null;
     }
 }
 
-//    public Flux<Tuple2<Long, LinhaDeOnibusDTO>> getLinhaDeOnibusList() {
-//        Flux<Long> interval = Flux.interval(Duration.ofSeconds(10));
-//        Flux<LinhaDeOnibusDTO> playlistFlux = this.findAll();
-//
-//        return Flux.zip(interval, playlistFlux);
-//
-//    }

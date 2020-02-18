@@ -3,7 +3,7 @@ package com.reactive.webflux.itinerario;
 import com.reactive.webflux.itinerario.dto.ItinerarioDTO;
 import com.reactive.webflux.itinerario.service.ItinerarioService;
 import com.reactive.webflux.linhadeonibus.dto.LinhaDeOnibusDTO;
-import com.reactive.webflux.linhadeonibus.service.LinhaDeOnibusService;
+import com.reactive.webflux.linhadeonibus.model.LinhaDeOnibus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -29,31 +29,19 @@ public class ItinerarioHandler {
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
-//    public Mono<ServerResponse> findByName(ServerRequest request) {
-//        return ServerResponse.ok()
-//                .contentType(APPLICATION_JSON)
-//                .body(linhadeOnibusService
-//                        .findByName(request.pathVariable("nome").toUpperCase()), LinhaDeOnibusDTO.class);
-//    }
-
-
     public Mono<ServerResponse> save(ServerRequest request) {
         final Mono<LinhaDeOnibusDTO> linhaDeOnibusMono = request.bodyToMono(LinhaDeOnibusDTO.class);
-//        Mono<ServerResponse> serverResponseMono = ServerResponse.ok()
-//                .contentType(APPLICATION_JSON)
-//                .body(linhaDeOnibusMono.flatMap(linhadeOnibusService::save), LinhaDeOnibus.class)
-//                .switchIfEmpty(ServerResponse.badRequest().build());
-        return null;//serverResponseMono;
+        return ServerResponse.ok()
+                .contentType(APPLICATION_JSON)
+                .body(linhaDeOnibusMono.flatMap(itinerarioService::save), LinhaDeOnibus.class)
+                .switchIfEmpty(ServerResponse.badRequest().build());
+
     }
 
-
-
-
     public Mono<ServerResponse> events(ServerRequest serverRequest) {
-        String codigo = serverRequest.pathVariable("codigo");
         return ServerResponse.ok()
                 .contentType(MediaType.TEXT_EVENT_STREAM)
-                .body(itinerarioService.streams(codigo), LinhaDeOnibusDTO.class)
+                .body(itinerarioService.streams(serverRequest.pathVariable("codigo")), LinhaDeOnibusDTO.class)
                 .doOnError(throwable -> new IllegalStateException(""));
     }
 }

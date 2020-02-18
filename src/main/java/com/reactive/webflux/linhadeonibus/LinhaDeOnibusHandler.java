@@ -38,47 +38,11 @@ public class LinhaDeOnibusHandler {
 
     public Mono<ServerResponse> save(ServerRequest request) {
         final Mono<LinhaDeOnibusDTO> linhaDeOnibusMono = request.bodyToMono(LinhaDeOnibusDTO.class);
-//        Mono<ServerResponse> serverResponseMono = ServerResponse.ok()
-//                .contentType(APPLICATION_JSON)
-//                .body(linhaDeOnibusMono.flatMap(linhadeOnibusService::save), LinhaDeOnibus.class)
-//                .switchIfEmpty(ServerResponse.badRequest().build());
-        return null;//serverResponseMono;
+        return ServerResponse.ok()
+                .contentType(APPLICATION_JSON)
+                .body(linhaDeOnibusMono.flatMap(linhadeOnibusService::save), LinhaDeOnibus.class)
+                .switchIfEmpty(ServerResponse.badRequest().build());
     }
-
-
-//    public Mono<ServerResponse> createCustomer(ServerRequest request) {
-//        return requestHandler.requireValidBody(
-//                validRequestBody -> {
-//                    return repository.insert(request.bodyToMono(Customer.class))
-//                            .single()
-//                            .flatMap(customer ->
-//                                    created(
-//                                            UriComponentsBuilder.fromUri(request.uri())
-//                                                    .path("{id}")
-//                                                    .build()
-//                                                    .expand(customer.getId()).toUri()
-//                                    ).body(fromObject(customer)));
-//                },
-//                request,
-//                Customer.class);
-//    }
-
-//    public Mono<ServerResponse> update(ServerRequest request) {
-//        return Mono
-//                .zip(
-//                        (dados) -> {
-//                            var linha = (LinhaDeOnibusDTO) dados[0];
-//                            var linha2 = (LinhaDeOnibusDTO) dados[1];
-//                            linha.setCodigo(linha2.getCodigo());
-//                            linha.setNome(linha2.getNome());
-//                            return linha;
-//                        },
-//                        linhadeOnibusService.findByCodigo(request.pathVariable("codigo")),
-//                        request.bodyToMono(LinhaDeOnibus.class)
-//                ).cast(LinhaDeOnibusDTO.class)
-//                .flatMap(linhaDeOnibus -> linhadeOnibusService.update(linhaDeOnibus))
-//                .flatMap(linhaDeOnibus -> ServerResponse.noContent().build());
-//    }
 
 
     public Mono<ServerResponse> events(ServerRequest serverRequest) {
