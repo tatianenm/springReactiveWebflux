@@ -31,7 +31,7 @@ public class ItinerarioHandler {
     }
 
     public Mono<ServerResponse> save(ServerRequest request) {
-        final Mono<LinhaDeOnibusDTO> linhaDeOnibusMono = request.bodyToMono(LinhaDeOnibusDTO.class);
+        Mono<LinhaDeOnibusDTO> linhaDeOnibusMono = request.bodyToMono(LinhaDeOnibusDTO.class);
         return ServerResponse.ok()
                 .contentType(APPLICATION_JSON)
                 .body(linhaDeOnibusMono.flatMap(itinerarioService::save), LinhaDeOnibus.class)
