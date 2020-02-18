@@ -3,6 +3,7 @@ package com.reactive.webflux.linhadeonibus;
 import com.reactive.webflux.linhadeonibus.dto.LinhaDeOnibusDTO;
 import com.reactive.webflux.linhadeonibus.model.LinhaDeOnibus;
 import com.reactive.webflux.linhadeonibus.service.LinhaDeOnibusService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -17,6 +18,7 @@ public class LinhaDeOnibusHandler {
 
     private LinhaDeOnibusService linhadeOnibusService;
 
+    @Autowired
     public LinhaDeOnibusHandler(LinhaDeOnibusService linhadeOnibusService) {
         this.linhadeOnibusService = linhadeOnibusService;
     }
@@ -35,7 +37,6 @@ public class LinhaDeOnibusHandler {
                         .findByName(request.pathVariable("nome").toUpperCase()), LinhaDeOnibusDTO.class);
     }
 
-
     public Mono<ServerResponse> save(ServerRequest request) {
         final Mono<LinhaDeOnibusDTO> linhaDeOnibusMono = request.bodyToMono(LinhaDeOnibusDTO.class);
         return ServerResponse.ok()
@@ -43,7 +44,6 @@ public class LinhaDeOnibusHandler {
                 .body(linhaDeOnibusMono.flatMap(linhadeOnibusService::save), LinhaDeOnibus.class)
                 .switchIfEmpty(ServerResponse.badRequest().build());
     }
-
 
     public Mono<ServerResponse> events(ServerRequest serverRequest) {
         String codigo = serverRequest.pathVariable("codigo");
