@@ -16,24 +16,24 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 @Component
 public class LinhaDeOnibusHandler {
 
-    private LinhaDeOnibusService linhadeOnibusService;
+    private LinhaDeOnibusService linhaDeOnibusService;
 
     @Autowired
     public LinhaDeOnibusHandler(LinhaDeOnibusService linhadeOnibusService) {
-        this.linhadeOnibusService = linhadeOnibusService;
+        this.linhaDeOnibusService = linhadeOnibusService;
     }
 
     public Mono<ServerResponse> findAll(ServerRequest request) {
         return ServerResponse.ok()
                 .contentType(APPLICATION_JSON)
-                .body(linhadeOnibusService.findAll(), LinhaDeOnibusDTO.class)
+                .body(linhaDeOnibusService.findAll(), LinhaDeOnibusDTO.class)
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
     public Mono<ServerResponse> findByName(ServerRequest request) {
         return ServerResponse.ok()
                 .contentType(APPLICATION_JSON)
-                .body(linhadeOnibusService
+                .body(linhaDeOnibusService
                         .findByName(request.pathVariable("nome").toUpperCase()), LinhaDeOnibusDTO.class);
     }
 
@@ -41,7 +41,7 @@ public class LinhaDeOnibusHandler {
         final Mono<LinhaDeOnibusDTO> linhaDeOnibusMono = request.bodyToMono(LinhaDeOnibusDTO.class);
         return ServerResponse.ok()
                 .contentType(APPLICATION_JSON)
-                .body(linhaDeOnibusMono.flatMap(linhadeOnibusService::save), LinhaDeOnibus.class)
+                .body(linhaDeOnibusMono.flatMap(linhaDeOnibusService::save), LinhaDeOnibus.class)
                 .switchIfEmpty(ServerResponse.badRequest().build());
     }
 
@@ -49,7 +49,7 @@ public class LinhaDeOnibusHandler {
         String codigo = serverRequest.pathVariable("codigo");
         return ServerResponse.ok()
                 .contentType(MediaType.TEXT_EVENT_STREAM)
-                .body(linhadeOnibusService.streams(codigo), LinhaDeOnibusDTO.class)
+                .body(linhaDeOnibusService.streams(codigo), LinhaDeOnibusDTO.class)
                 .doOnError(throwable -> new IllegalStateException(""));
     }
 }
