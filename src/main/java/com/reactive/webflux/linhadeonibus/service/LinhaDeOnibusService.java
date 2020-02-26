@@ -58,7 +58,7 @@ public class LinhaDeOnibusService {
             });
         }
         var linha = linhaDeOnibusRepository.save(linhaDeOnibusConverter.toEntity(linhaDeOnibusDTO));
-        ;
+        
         return linhaDeOnibusConverter.toDTO(linha);
     }
 
