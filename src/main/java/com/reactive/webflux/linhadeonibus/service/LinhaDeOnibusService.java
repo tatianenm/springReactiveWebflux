@@ -59,7 +59,7 @@ public class LinhaDeOnibusService {
         }
         var linha = linhaDeOnibusRepository.save(linhaDeOnibusConverter.toEntity(linhaDeOnibusDTO));
         ;
-        return linhaDeOnibusConverter.toDTO(LinhaDeOnibus.class);
+        return linhaDeOnibusConverter.toDTO(linha);
     }
 
     public Flux<LinhaDeOnibusDTO> findByName(String name) {
