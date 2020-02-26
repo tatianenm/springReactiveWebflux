@@ -46,7 +46,7 @@ public class LinhaDeOnibusHandler {
     }
 
     public Mono<ServerResponse> events(ServerRequest serverRequest) {
-        String codigo = serverRequest.pathVariable("codigo");
+        var codigo = serverRequest.pathVariable("codigo");
         return ServerResponse.ok()
                 .contentType(MediaType.TEXT_EVENT_STREAM)
                 .body(linhaDeOnibusService.streams(codigo), LinhaDeOnibusDTO.class)
